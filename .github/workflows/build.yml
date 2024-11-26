@@ -2,9 +2,9 @@ name: Build and Compress
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "master", "develop" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "master", "develop" ]
 
 jobs:
   build:
@@ -42,7 +42,11 @@ jobs:
       - name: Build binary
         run: |
           mkdir -p build/${{ matrix.goos }}_${{ matrix.goarch }}
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/${{ matrix.goos }}_${{ matrix.goarch }}/go_qr .
+          if [ "${{ matrix.goos }}" == "windows" ]; then
+            GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/${{ matrix.goos }}_${{ matrix.goarch }}/go_qr.exe .
+          else
+            GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/${{ matrix.goos }}_${{ matrix.goarch }}/go_qr .
+          fi
 
       - name: Compress binary
         run: |
