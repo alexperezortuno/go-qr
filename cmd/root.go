@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/skip2/go-qrcode"
 	"image/color"
@@ -20,18 +21,19 @@ var (
 	level           qrcode.RecoveryLevel
 	backgroundColor string
 	foregroundColor string
+	message         string
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "go-qr",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "QR code generator",
+	Long: `This application generates QR codes for different types of data.
+It currently supports:
+- WiFi
+- URL
+- Phone number
+- SMS`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -68,6 +70,18 @@ func ConvertHexColor(hex string) (color.RGBA, error) {
 	return color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: uint8(a)}, nil
 }
 
+func CheckPhoneNumber(phone string) (bool, error) {
+	if !strings.HasPrefix(phone, "+") || len(phone) < 11 || len(phone) > 15 {
+		return false, errors.New("phone number must start with '+' and be between 11 and 15 characters long")
+	}
+	for _, c := range phone[1:] {
+		if c < '0' || c > '9' {
+			return false, errors.New("phone number must contain only digits after '+'")
+		}
+	}
+	return true, nil
+}
+
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -91,11 +105,8 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&backgroundColor, "background", "b", "#ffffff", "Background color")
-	rootCmd.Flags().StringVarP(&foregroundColor, "foreground", "f", "#000000", "Foreground color")
-	rootCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
-	rootCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output file")
-	rootCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
 	rootCmd.AddCommand(wifiCmd)
 	rootCmd.AddCommand(urlCmd)
+	rootCmd.AddCommand(phoneCmd)
+	rootCmd.AddCommand(smsCmd)
 }

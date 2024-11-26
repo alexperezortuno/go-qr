@@ -4,37 +4,29 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"github.com/skip2/go-qrcode"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var (
-	url string
-)
+var url string
 
 // urlCmd represents the url command
 var urlCmd = &cobra.Command{
 	Use:   "url",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Url to generate QR code",
+	Long:  `Open the URL specified in the --url flag.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		b, e := ConvertHexColor(backgroundColor)
 		if e != nil {
-			fmt.Printf("Error converting background color: %v\n", e)
+			cmd.PrintErrf("Error converting background color: %v\n", e)
 			os.Exit(1)
 		}
 
 		f, e := ConvertHexColor(foregroundColor)
 		if e != nil {
-			fmt.Printf("Error converting foreground color: %v\n", e)
+			cmd.PrintErrf("Error converting foreground color: %v\n", e)
 			os.Exit(1)
 		}
 
@@ -47,5 +39,10 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
+	urlCmd.Flags().StringVarP(&backgroundColor, "background", "b", "#ffffff", "Background color")
+	urlCmd.Flags().StringVarP(&foregroundColor, "foreground", "f", "#000000", "Foreground color")
+	urlCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
+	urlCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
+	urlCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
 	urlCmd.Flags().StringVarP(&url, "url", "u", "", "URL to generate QR code")
 }
