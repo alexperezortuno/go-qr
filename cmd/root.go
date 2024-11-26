@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/skip2/go-qrcode"
 	"image/color"
@@ -68,6 +69,18 @@ func ConvertHexColor(hex string) (color.RGBA, error) {
 	return color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: uint8(a)}, nil
 }
 
+func CheckPhoneNumber(phone string) (bool, error) {
+	if !strings.HasPrefix(phone, "+") || len(phone) < 11 || len(phone) > 15 {
+		return false, errors.New("phone number must start with '+' and be between 11 and 15 characters long")
+	}
+	for _, c := range phone[1:] {
+		if c < '0' || c > '9' {
+			return false, errors.New("phone number must contain only digits after '+'")
+		}
+	}
+	return true, nil
+}
+
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -94,8 +107,9 @@ func init() {
 	rootCmd.Flags().StringVarP(&backgroundColor, "background", "b", "#ffffff", "Background color")
 	rootCmd.Flags().StringVarP(&foregroundColor, "foreground", "f", "#000000", "Foreground color")
 	rootCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
-	rootCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output file")
+	rootCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
 	rootCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
 	rootCmd.AddCommand(wifiCmd)
 	rootCmd.AddCommand(urlCmd)
+	rootCmd.AddCommand(phoneCmd)
 }
