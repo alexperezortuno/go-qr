@@ -37,20 +37,20 @@ to quickly create a Cobra application.`,
 
 		b, e := ConvertHexColor(backgroundColor)
 		if e != nil {
-			fmt.Printf("Error converting background color: %v\n", e)
+			cmd.PrintErrf("Error converting background color: %v\n", e)
 			os.Exit(1)
 		}
 
 		f, e := ConvertHexColor(foregroundColor)
 		if e != nil {
-			fmt.Printf("Error converting foreground color: %v\n", e)
+			cmd.PrintErrf("Error converting foreground color: %v\n", e)
 			os.Exit(1)
 		}
 
 		err := qrcode.WriteColorFile(wifiConfig, level, width, b, f, output)
 
 		if err != nil {
-			fmt.Printf("Error generating QR Code WiFi: %v\n", err)
+			cmd.PrintErrf("Error generating QR Code WiFi: %v\n", err)
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -58,6 +58,11 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
+	wifiCmd.Flags().StringVarP(&backgroundColor, "background", "b", "#ffffff", "Background color")
+	wifiCmd.Flags().StringVarP(&foregroundColor, "foreground", "f", "#000000", "Foreground color")
+	wifiCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
+	wifiCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
+	wifiCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
 	wifiCmd.Flags().StringVarP(&ssid, "ssid", "s", "", "SSID of the wifi network")
 	wifiCmd.Flags().StringVarP(&password, "password", "p", "", "Password of the wifi network")
 	wifiCmd.Flags().StringVarP(&encryption, "encryption", "e", "WPA", "Encryption type of the wifi network")

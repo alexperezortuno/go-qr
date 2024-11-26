@@ -21,18 +21,18 @@ var phoneCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		b, e := ConvertHexColor(backgroundColor)
 		if e != nil {
-			fmt.Printf("Error converting background color: %v\n", e)
+			cmd.PrintErrf("Error converting background color: %v\n", e)
 			os.Exit(1)
 		}
 
 		f, e := ConvertHexColor(foregroundColor)
 		if e != nil {
-			fmt.Printf("Error converting foreground color: %v\n", e)
+			cmd.PrintErrf("Error converting foreground color: %v\n", e)
 			os.Exit(1)
 		}
 
 		if r, e := CheckPhoneNumber(phone); !r {
-			fmt.Println(e)
+			cmd.PrintErr(e)
 			os.Exit(1)
 		}
 		p := fmt.Sprintf("tel:%s", phone)
@@ -45,6 +45,10 @@ var phoneCmd = &cobra.Command{
 }
 
 func init() {
-	phoneCmd.Flags().StringVarP(&output, "output", "o", "qr_phone.png", "Output filename")
+	phoneCmd.Flags().StringVarP(&backgroundColor, "background", "b", "#ffffff", "Background color")
+	phoneCmd.Flags().StringVarP(&foregroundColor, "foreground", "f", "#000000", "Foreground color")
+	phoneCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
+	phoneCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
+	phoneCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
 	phoneCmd.Flags().StringVarP(&phone, "phone", "p", "", "Phone number to generate QR code")
 }

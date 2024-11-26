@@ -4,7 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"github.com/skip2/go-qrcode"
 	"os"
 
@@ -21,13 +20,13 @@ var urlCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		b, e := ConvertHexColor(backgroundColor)
 		if e != nil {
-			fmt.Printf("Error converting background color: %v\n", e)
+			cmd.PrintErrf("Error converting background color: %v\n", e)
 			os.Exit(1)
 		}
 
 		f, e := ConvertHexColor(foregroundColor)
 		if e != nil {
-			fmt.Printf("Error converting foreground color: %v\n", e)
+			cmd.PrintErrf("Error converting foreground color: %v\n", e)
 			os.Exit(1)
 		}
 
@@ -40,6 +39,10 @@ var urlCmd = &cobra.Command{
 }
 
 func init() {
-	urlCmd.Flags().StringVarP(&output, "output", "o", "qr_url.png", "Output filename")
+	urlCmd.Flags().StringVarP(&backgroundColor, "background", "b", "#ffffff", "Background color")
+	urlCmd.Flags().StringVarP(&foregroundColor, "foreground", "f", "#000000", "Foreground color")
+	urlCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
+	urlCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
+	urlCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
 	urlCmd.Flags().StringVarP(&url, "url", "u", "", "URL to generate QR code")
 }
