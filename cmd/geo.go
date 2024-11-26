@@ -56,6 +56,6 @@ func init() {
 	geoCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
 	geoCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
 	geoCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
-	geoCmd.Flags().StringVarP(&latitude, "latitude", "a", "", "Latitude")
-	geoCmd.Flags().StringVarP(&longitude, "longitude", "o", "", "Longitude")
+	geoCmd.Flags().StringVarP(&latitude, "latitude", "x", "", "Latitude")
+	geoCmd.Flags().StringVarP(&longitude, "longitude", "y", "", "Longitude")
 }
