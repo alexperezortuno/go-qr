@@ -37,3 +37,4 @@ gen
 
 # Go workspace file
 go.sum
+build/*
