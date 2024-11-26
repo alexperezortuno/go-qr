@@ -1,0 +1,46 @@
+name: Build and Compress
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23"
+      - name: Build binary
+        run: |
+          mkdir -p build/${{ matrix.goos }}_${{ matrix.goarch }}
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/${{ matrix.goos }}_${{ matrix.goarch }}/go_qr .
+
+      - name: Compress binary
+        run: |
+          cd build/${{ matrix.goos }}_${{ matrix.goarch }}
+          if [ "${{ matrix.goos }}" == "windows" ]; then
+            zip ../go_qr_${{ matrix.goos }}_${{ matrix.goarch }}.zip go_qr.exe
+          else
+            tar -czf ../go_qr_${{ matrix.goos }}_${{ matrix.goarch }}.tar.gz go_qr
+          fi
+          cd ../..
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: go_qr-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: build/go_qr_${{ matrix.goos }}_${{ matrix.goarch }}.*
+
