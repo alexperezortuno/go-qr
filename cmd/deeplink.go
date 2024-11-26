@@ -49,8 +49,8 @@ func init() {
 	deeplinkCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
 	deeplinkCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
 	deeplinkCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
-	deeplinkCmd.Flags().StringVarP(&deeplink, "deeplink", "d", "", "Link to create deeplink for")
-	err := deeplinkCmd.MarkFlagRequired("deeplink")
+	deeplinkCmd.Flags().StringVarP(&deeplink, "link", "d", "", "Link to create deeplink for")
+	err := deeplinkCmd.MarkFlagRequired("link")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
