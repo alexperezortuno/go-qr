@@ -110,4 +110,5 @@ func init() {
 	rootCmd.AddCommand(phoneCmd)
 	rootCmd.AddCommand(smsCmd)
 	rootCmd.AddCommand(geoCmd)
+	rootCmd.AddCommand(deeplinkCmd)
 }
