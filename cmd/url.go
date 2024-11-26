@@ -12,14 +12,12 @@ import (
 )
 
 var (
-	ssid       string
-	password   string
-	encryption string
+	url string
 )
 
-// wifiCmd represents the wifi command
-var wifiCmd = &cobra.Command{
-	Use:   "wifi",
+// urlCmd represents the url command
+var urlCmd = &cobra.Command{
+	Use:   "url",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -28,13 +26,6 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if ssid == "" {
-			fmt.Println("SSID is required")
-			os.Exit(1)
-		}
-
-		wifiConfig := fmt.Sprintf("WIFI:S:%s;T:%s;P:%s;;", ssid, encryption, password)
-
 		b, e := ConvertHexColor(backgroundColor)
 		if e != nil {
 			fmt.Printf("Error converting background color: %v\n", e)
@@ -47,18 +38,14 @@ to quickly create a Cobra application.`,
 			os.Exit(1)
 		}
 
-		err := qrcode.WriteColorFile(wifiConfig, level, width, b, f, output)
-
+		err := qrcode.WriteColorFile(url, level, width, b, f, output)
 		if err != nil {
-			fmt.Printf("Error generating QR Code WiFi: %v\n", err)
+			cmd.PrintErrf("Error generating QR Code URL: %v\n", err)
 			os.Exit(1)
 		}
-		os.Exit(0)
 	},
 }
 
 func init() {
-	wifiCmd.Flags().StringVarP(&ssid, "ssid", "s", "", "SSID of the wifi network")
-	wifiCmd.Flags().StringVarP(&password, "password", "p", "", "Password of the wifi network")
-	wifiCmd.Flags().StringVarP(&encryption, "encryption", "e", "WPA", "Encryption type of the wifi network")
+	urlCmd.Flags().StringVarP(&url, "url", "u", "", "URL to generate QR code")
 }
