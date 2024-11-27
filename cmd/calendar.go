@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/skip2/go-qrcode"
 	"os"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
@@ -47,7 +48,8 @@ var calendarCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		uuid := uuid.New()
-		c := fmt.Sprintf("BEGIN:VEVENT\nVERSION:2.0\nCLASS:PUBLIC\nUID:%s\nSUMMARY:%s\nLOCATION:%s\nDTSTART:%s\nDTEND:%s\nEND:VEVENT", uuid.String(), event, address, parseDateStart, parseDateEnd)
+		dtStamp := time.Now().UTC().Format("20060102T150405Z")
+		c := fmt.Sprintf("BEGIN:VCALENDAR\nPRODID:-//XYZ Corp//My Product//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nBEGIN:VEVENT\nVERSION:2.0\nCLASS:PUBLIC\nUID:%s\nSUMMARY:%s\nLOCATION:%s\nDTSTART:%s\nDTEND:%s\nDTSTAMP:%s\nCREATED:%s\nEND:VEVENT\nEND:VCALENDAR", uuid.String(), event, address, parseDateStart, parseDateEnd, dtStamp, dtStamp)
 		print(c)
 		err := qrcode.WriteColorFile(c, level, width, b, f, output)
 		if err != nil {
