@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -22,6 +23,7 @@ var (
 	backgroundColor string
 	foregroundColor string
 	message         string
+	address         string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -33,10 +35,11 @@ It currently supports:
 - WiFi
 - URL
 - Phone number
-- SMS`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+- SMS
+- Geo location
+- Deep links
+- Cryptocurrency addresses
+- Calendar events`,
 }
 
 func ConvertHexColor(hex string) (color.RGBA, error) {
@@ -82,6 +85,22 @@ func CheckPhoneNumber(phone string) (bool, error) {
 	return true, nil
 }
 
+func isValidDate(dateStr string) (bool, string) {
+	layout := "2006-01-02 15:04:05"
+
+	parsedDate, err := time.Parse(layout, dateStr)
+	if err != nil {
+		return false, ""
+	}
+
+	return true, toISO8601(parsedDate)
+}
+
+func toISO8601(date time.Time) string {
+	layout := "20060102T150405Z"
+	return date.UTC().Format(layout)
+}
+
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -111,4 +130,6 @@ func init() {
 	rootCmd.AddCommand(smsCmd)
 	rootCmd.AddCommand(geoCmd)
 	rootCmd.AddCommand(deeplinkCmd)
+	rootCmd.AddCommand(cryptoCmd)
+	rootCmd.AddCommand(calendarCmd)
 }

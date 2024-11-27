@@ -34,7 +34,7 @@ var deeplinkCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		d := deeplink + ":" + latitude + "," + longitude
+		d := deeplink + "://" + str
 		err := qrcode.WriteColorFile(d, level, width, b, f, output)
 		if err != nil {
 			cmd.PrintErrf("Error generating QR Code URL: %v\n", err)
