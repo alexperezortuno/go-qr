@@ -41,6 +41,11 @@ $env:GOOS="windows"; $env:GOARCH="amd64"; go build -o build/go_qr.exe main.go
 ./build/go_qr calendar -e "Test" -a "Test address" -s "2024-01-01 00:00:00" -d "2024-01-01 01:00:00" -o qr_calendar.png
 ```
 
+## Run Bluetooth
+```shell
+./build/go_qr bt -n "Test" -o qr_bluetooth.png
+```
+
 ## Create Docker Image
 ```shell
 docker build -t go_qr:latest .
