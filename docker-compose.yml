@@ -1,0 +1,7 @@
+services:
+  qr-code-generator:
+    image: go_qr:latest
+    container_name: qr-code-generator
+    command: ["url", "-u", "https://www.google.com", "-o", "/app/images/qr_image.png"]
+    volumes:
+      - ./images:/app/images
