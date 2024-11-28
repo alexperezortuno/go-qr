@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"github.com/skip2/go-qrcode"
 	"github.com/spf13/cobra"
 	"os"
@@ -15,16 +16,6 @@ var smsCmd = &cobra.Command{
 	Short: "Send an SMS",
 	Long:  `This command will send an SMS to the phone number specified in the --phone flag.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if phone == "" {
-			cmd.PrintErr("Phone number is required")
-			os.Exit(1)
-		}
-
-		if message == "" {
-			cmd.PrintErr("Message is required")
-			os.Exit(1)
-		}
-
 		if r, e := CheckPhoneNumber(phone); !r {
 			cmd.PrintErr(e)
 			os.Exit(1)
@@ -59,6 +50,14 @@ func init() {
 	smsCmd.Flags().IntVarP(&width, "width", "w", 256, "Width of the QR code")
 	smsCmd.Flags().IntVarP((*int)(&level), "level", "l", 1, "Error recovery level")
 	smsCmd.Flags().StringVarP(&output, "output", "o", "qr.png", "Output filename")
-	smsCmd.Flags().StringVarP(&phone, "phone", "p", "", "Phone number to generate QR code")
+	smsCmd.Flags().StringVarP(&phone, "number", "n", "", "Phone number to generate QR code")
+	if err := smsCmd.MarkFlagRequired("number"); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	smsCmd.Flags().StringVarP(&message, "message", "m", "", "Message to send")
+	if err := smsCmd.MarkFlagRequired("message"); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
