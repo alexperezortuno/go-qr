@@ -132,4 +132,5 @@ func init() {
 	rootCmd.AddCommand(deeplinkCmd)
 	rootCmd.AddCommand(cryptoCmd)
 	rootCmd.AddCommand(calendarCmd)
+	rootCmd.AddCommand(bluetoothCmd)
 }
